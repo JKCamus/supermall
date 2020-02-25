@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <main-tab-bar></main-tab-bar>
+    <main-tab-bar class="main-tab-bar"></main-tab-bar>
     <router-view></router-view>
   </div>
 </template>
@@ -18,5 +18,8 @@
 
 <style>
   @import url("./assets/css/base.css");
+  .main-tab-bar{
+    z-index: 9;
+  }
 
 </style>
