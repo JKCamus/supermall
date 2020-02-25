@@ -18,8 +18,13 @@
     mounted() {
       this.scroll = new BScroll(this.$refs.wrapper, {
         //   不为true，组件里的div等无法被点击
-        click: true
+        click: true,
       })
+    },
+    methods: {
+        scrollTo(x,y,time=300){
+            this.scroll.scrollTo(x,y,time)
+        }
     },
   }
 
