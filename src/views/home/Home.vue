@@ -3,15 +3,18 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <scroll class="content" ref="scroll" :probeType="3"
-     @scroll="contentScroll"
-     :pull-up-load="true"
-     @pulingUp='loadMore'>
-      <home-swiper :banners="banners"></home-swiper>
+    <tab-control :titles="['流行','新款','精选']" 
+    class="tab-control" @tabClick="tabClick"
+    ref="tabControl1"
+    v-show="isTabFixed"></tab-control>
+    <scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll" :pull-up-load="true"
+      @pulingUp='loadMore'>
+      <home-swiper :banners="banners" @swiperImageLoad='swiperImageLoad'></home-swiper>
       <recommend :recommends="recommends"></recommend>
       <feature></feature>
-      <tab-control :titles="['流行','新款','精选']" class="tab-control" 
-      @tabClick="tabClick"></tab-control>
+      <tab-control :titles="['流行','新款','精选']" 
+      class="tab-control" @tabClick="tabClick"
+      ref="tabControl2"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="topClick" v-show="isShowBackTop"></back-top>
@@ -30,6 +33,9 @@
     getHomeMultidata,
     getHomeGoods,
   } from 'network/home'
+  import {
+    debounce
+  } from 'common/utils'
   export default {
     name: "home",
     components: {
@@ -63,7 +69,9 @@
         },
         // 默认首页为pop，
         currentType: 'pop',
-        isShowBackTop: false
+        isShowBackTop: false,
+        isTabFixed:false,
+        tabOffsetTop: 0,
       }
     },
     computed: {
@@ -80,11 +88,16 @@
         this.getHomeGoods('sell')
     },
     mounted() {
-      // 不要在created里面拿到dom
-      this.$bus.$on('imgItemLoad',()=>{
-        this.$refs.scroll.refresh()
-        // console.log('----');
+      // 用防抖包装refresh函数,注意传入时不加括号
+      const refresh = debounce(this.$refs.scroll.refresh, 50)
+      this.$bus.$on('imgItemLoad', () => {
+        refresh()
       })
+      // 不要在created里面拿到dom
+      // this.$bus.$on('imgItemLoad', () => {
+      //   this.$refs.scroll.refresh()
+      //   // console.log('----');
+      // })
     },
     methods: {
       // 点击切换推荐栏
@@ -101,6 +114,10 @@
             this.currentType = 'sell'
             break
         }
+        this.$refs.tabControl2.currentIndex=index;
+        this.$refs.tabControl1.currentIndex = index;
+
+
       },
       // 点击回到顶部
       topClick() {
@@ -111,12 +128,17 @@
       // 判断点击回到顶部按钮的显示隐藏
       contentScroll(position) {
         this.isShowBackTop = (-position.y) > 1000
+        this.isTabFixed=(-position.y)>this.tabOffsetTop
       },
       // 加载更多goodList
-      loadMore(){
+      loadMore() {
         this.getHomeGoods(this.currentType)
       },
-
+      swiperImageLoad(){
+        this.tabOffsetTop=this.$refs.tabControl2.$el.offsetTop
+        console.log(this.tabOffsetTop);
+        
+      },
       // 网络请求方法
       getHomeMultidata() {
         getHomeMultidata().then(res => {
