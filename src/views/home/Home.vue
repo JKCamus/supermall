@@ -3,18 +3,14 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <tab-control :titles="['流行','新款','精选']" 
-    class="tab-control" @tabClick="tabClick"
-    ref="tabControl1"
-    v-show="isTabFixed"></tab-control>
+    <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick" ref="tabControl1"
+      v-show="isTabFixed"></tab-control>
     <scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll" :pull-up-load="true"
       @pulingUp='loadMore'>
       <home-swiper :banners="banners" @swiperImageLoad='swiperImageLoad'></home-swiper>
       <recommend :recommends="recommends"></recommend>
       <feature></feature>
-      <tab-control :titles="['流行','新款','精选']" 
-      class="tab-control" @tabClick="tabClick"
-      ref="tabControl2"></tab-control>
+      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick" ref="tabControl2"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="topClick" v-show="isShowBackTop"></back-top>
@@ -70,13 +66,24 @@
         // 默认首页为pop，
         currentType: 'pop',
         isShowBackTop: false,
-        isTabFixed:false,
+        isTabFixed: false,
         tabOffsetTop: 0,
+        saveY: 0
       }
     },
     computed: {
       showGoods() {
         return this.goods[this.currentType].list
+      },
+      // destroyed() {
+      //   console.log("destroyed");
+      // },
+      activated() {
+        this.$refs.scroll.scrollTo(0, this.saveY, 0)
+        this.$refs.scroll.refresh()
+      },
+      deactivated() {
+        this.saveY = this.$refs.scroll.getScrollY()
       }
     },
     created() {
@@ -114,10 +121,8 @@
             this.currentType = 'sell'
             break
         }
-        this.$refs.tabControl2.currentIndex=index;
+        this.$refs.tabControl2.currentIndex = index;
         this.$refs.tabControl1.currentIndex = index;
-
-
       },
       // 点击回到顶部
       topClick() {
@@ -128,16 +133,15 @@
       // 判断点击回到顶部按钮的显示隐藏
       contentScroll(position) {
         this.isShowBackTop = (-position.y) > 1000
-        this.isTabFixed=(-position.y)>this.tabOffsetTop
+        this.isTabFixed = (-position.y) > this.tabOffsetTop
       },
       // 加载更多goodList
       loadMore() {
         this.getHomeGoods(this.currentType)
       },
-      swiperImageLoad(){
-        this.tabOffsetTop=this.$refs.tabControl2.$el.offsetTop
-        console.log(this.tabOffsetTop);
-        
+      swiperImageLoad() {
+        this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
+        // console.log(this.tabOffsetTop);
       },
       // 网络请求方法
       getHomeMultidata() {
@@ -182,8 +186,9 @@
   }
 
   .tab-control {
-    position: sticky;
-    top: 44px;
+    /* position: sticky;
+    top: 44px; */
+    position: relative;
     z-index: 9;
   }
 
@@ -195,6 +200,8 @@
     position: absolute;
     top: 44px;
     bottom: 49px;
+    left: 0;
+    right: 0;
   }
 
 </style>
