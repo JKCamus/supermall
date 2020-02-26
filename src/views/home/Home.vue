@@ -3,14 +3,18 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <scroll class="content" ref="scroll">
+    <scroll class="content" ref="scroll" :probeType="3"
+     @scroll="contentScroll"
+     :pull-up-load="true"
+     @pulingUp='loadMore'>
       <home-swiper :banners="banners"></home-swiper>
       <recommend :recommends="recommends"></recommend>
       <feature></feature>
-      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
+      <tab-control :titles="['流行','新款','精选']" class="tab-control" 
+      @tabClick="tabClick"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
-    <back-top @click.native="topClick"></back-top>
+    <back-top @click.native="topClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 <script>
@@ -58,7 +62,8 @@
           },
         },
         // 默认首页为pop，
-        currentType: 'pop'
+        currentType: 'pop',
+        isShowBackTop: false
       }
     },
     computed: {
@@ -67,14 +72,22 @@
       }
     },
     created() {
-      // 请求多个数据
+      // !请求多个数据
       this.getHomeMultidata()
       // 请求商品数据
       this.getHomeGoods('pop'),
         this.getHomeGoods('new'),
         this.getHomeGoods('sell')
     },
+    mounted() {
+      // 不要在created里面拿到dom
+      this.$bus.$on('imgItemLoad',()=>{
+        this.$refs.scroll.refresh()
+        // console.log('----');
+      })
+    },
     methods: {
+      // 点击切换推荐栏
       tabClick(index) {
         // console.log(index);
         switch (index) {
@@ -89,11 +102,21 @@
             break
         }
       },
-      topClick(){
-        this.$refs.scroll.scrollTo(0,0)
+      // 点击回到顶部
+      topClick() {
+        this.$refs.scroll.scrollTo(0, 0)
         // console.log(12);
-        
+
       },
+      // 判断点击回到顶部按钮的显示隐藏
+      contentScroll(position) {
+        this.isShowBackTop = (-position.y) > 1000
+      },
+      // 加载更多goodList
+      loadMore(){
+        this.getHomeGoods(this.currentType)
+      },
+
       // 网络请求方法
       getHomeMultidata() {
         getHomeMultidata().then(res => {
@@ -101,6 +124,7 @@
           this.recommends = res.data.recommend.list
         })
       },
+      // 商品列表加载
       getHomeGoods(type) {
         // 当前页码为0+1
         const page = this.goods[type].page + 1
@@ -110,6 +134,7 @@
             //拿到res里面的data里面的list通过解构push到当前组件的goods中
             this.goods[type].list.push(...res.data.list)
             this.goods[type].page += 1
+            this.$refs.scroll.finishPullUp()
           }
         )
       }
@@ -139,13 +164,15 @@
     top: 44px;
     z-index: 9;
   }
-.content{
-  /* height:300px; */
-  /* 定位确定content内容高度bs-scroll才可用 */
-  /* 子绝父相 */
-  overflow: hidden;
-  position: absolute;
-  top: 44px;
-  bottom: 49px;
-}
+
+  .content {
+    /* height:300px; */
+    /* 定位确定content内容高度bs-scroll才可用 */
+    /* 子绝父相 */
+    overflow: hidden;
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+  }
+
 </style>
