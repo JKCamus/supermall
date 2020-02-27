@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <main-tab-bar class="main-tab-bar"></main-tab-bar>
-    <keep-alive>
+    <keep-alive exclude="Detail">
       <router-view></router-view>
     </keep-alive>
   </div>
