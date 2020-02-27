@@ -3,14 +3,16 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick" ref="tabControl1"
-      v-show="isTabFixed"></tab-control>
+    <tab-control :titles="['流行','新款','精选']" class="tab-control" 
+    @tabClick="tabClick" ref="tabControl1"
+    v-show="isTabFixed"></tab-control>
     <scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll" :pull-up-load="true"
       @pulingUp='loadMore'>
       <home-swiper :banners="banners" @swiperImageLoad='swiperImageLoad'></home-swiper>
       <recommend :recommends="recommends"></recommend>
       <feature></feature>
-      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick" ref="tabControl2"></tab-control>
+      <tab-control :titles="['流行','新款','精选']" class="tab-control" 
+      @tabClick="tabClick" ref="tabControl2"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="topClick" v-show="isShowBackTop"></back-top>
@@ -121,14 +123,13 @@
             this.currentType = 'sell'
             break
         }
+        // 使得滚动的tabControl和固定的tabControl状态一致
         this.$refs.tabControl2.currentIndex = index;
         this.$refs.tabControl1.currentIndex = index;
       },
       // 点击回到顶部
       topClick() {
         this.$refs.scroll.scrollTo(0, 0)
-        // console.log(12);
-
       },
       // 判断点击回到顶部按钮的显示隐藏
       contentScroll(position) {
@@ -141,7 +142,7 @@
       },
       swiperImageLoad() {
         this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
-        // console.log(this.tabOffsetTop);
+        console.log(this.tabOffsetTop);
       },
       // 网络请求方法
       getHomeMultidata() {
