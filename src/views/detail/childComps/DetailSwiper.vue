@@ -5,11 +5,10 @@
     </swiper-item>
   </swiper>
 </template>
+
 <script>
-  import {
-    Swiper,
-    SwiperItem
-  } from 'components/common/swiper'
+  import {Swiper, SwiperItem} from 'components/common/swiper'
+
   export default {
     name: "DetailSwiper",
     components: {
@@ -19,17 +18,17 @@
     props: {
       topImages: {
         type: Array,
-        default () {
+        default() {
           return []
         }
       }
-    },
-  }
-
-</script>
-<style scoped>
-    .detail-swiper{
-        height: 300px;
-        overflow: hidden;
     }
+  }
+</script>
+
+<style scoped>
+  .detail-swiper {
+    height: 300px;
+    overflow: hidden;
+  }
 </style>
