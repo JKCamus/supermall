@@ -4,7 +4,7 @@
     <detail-swiper :top-images="topImages"></detail-swiper>
     <detail-base-info :goods="goods"></detail-base-info>
     <detail-shop-info :shop="shop"></detail-shop-info>
-    <detail-goods-info :goods="goods"></detail-goods-info>
+    <detail-goods-info :detail-info="detailInfo"></detail-goods-info>
     <detail-param-info :param-info="paramInfo"></detail-param-info>
   </div>
 </template>
