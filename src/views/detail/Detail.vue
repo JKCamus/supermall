@@ -1,11 +1,13 @@
 <template>
-  <div class="detail">
+  <div id="detail">
     <detail-nav-bar></detail-nav-bar>
-    <detail-swiper :top-images="topImages"></detail-swiper>
-    <detail-base-info :goods="goods"></detail-base-info>
-    <detail-shop-info :shop="shop"></detail-shop-info>
-    <detail-goods-info :detail-info="detailInfo"></detail-goods-info>
-    <detail-param-info :param-info="paramInfo"></detail-param-info>
+    <scroll class="content" ref="scroll">
+      <detail-swiper :top-images="topImages"></detail-swiper>
+      <detail-base-info :goods="goods"></detail-base-info>
+      <detail-shop-info :shop="shop"></detail-shop-info>
+      <detail-images-info @imgLoad="imgLoad" :images-info="detailInfo" />
+      <detail-param-info :param-info="paramInfo"></detail-param-info>
+    </scroll>
   </div>
 </template>
 <script>
@@ -13,8 +15,9 @@
   import DetailSwiper from 'views/detail/childComps/DetailSwiper'
   import DetailBaseInfo from 'views/detail/childComps/DetailBaseInfo'
   import DetailShopInfo from 'views/detail/childComps/DetailShopInfo'
-  import DetailGoodsInfo from 'views/detail/childComps/DetailGoodsInfo'
+  import DetailImagesInfo from 'views/detail/childComps/DetailImagesInfo'
   import DetailParamInfo from 'views/detail/childComps/DetailParamInfo'
+  import Scroll from 'components/common/scroll/Scroll'
   import {
     getDetail,
     Goods,
@@ -28,8 +31,9 @@
       DetailSwiper,
       DetailBaseInfo,
       DetailShopInfo,
-      DetailGoodsInfo,
-      DetailParamInfo
+      DetailImagesInfo,
+      DetailParamInfo,
+      Scroll
     },
     data() {
       return {
@@ -65,7 +69,32 @@
 
       })
     },
+    methods: {
+      imgLoad() {
+        // this.$refs.scroll.refresh()
+        this.$refs.scroll.refresh();
+
+      }
+    }
   }
 
 </script>
-<style scoped></style>
+<style scoped>
+  #detail {
+    position: relative;
+    z-index: 9;
+    background-color: #fff;
+    height: 100vh;
+  }
+
+  .detail-nav {
+    position: relative;
+    z-index: 9;
+    background-color: #fff;
+  }
+
+  .content {
+    height: calc(100% - 44px);
+  }
+
+</style>
