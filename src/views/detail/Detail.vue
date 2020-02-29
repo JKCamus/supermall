@@ -5,7 +5,7 @@
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
-      <detail-images-info @imgLoad="imgLoad" :images-info="detailInfo" />
+      <detail-images-info @imgLoad="detailImgLoad" :images-info="detailInfo" />
       <detail-param-info :param-info="paramInfo"></detail-param-info>
       <detail-comment-info :comment-info="commentInfo" class="detail-set-scroll"></detail-comment-info>
       <goods-list :goods="recommends"></goods-list>
@@ -27,6 +27,8 @@
   import {
     debounce
   } from 'common/utils'
+  import {itemListenerMixin} from 'common/mixin'
+  
   import {
     getDetail,
     Goods,
@@ -47,6 +49,7 @@
       Scroll,
       GoodsList
     },
+    mixins:[itemListenerMixin],
     data() {
       return {
         iid: null,
@@ -103,11 +106,7 @@
       // })
     },
     mounted() {
-      let refresh = debounce(this.$refs.scroll.refresh, 50)
-      this.itemImgListener=()=>{
-        refresh()
-      }
-      this.$bus.$on('imgItemLoad',this.itemImgListener)
+ 
     },
     // detail里没有做缓存，deactivated无效
     // deactivated() {
@@ -118,7 +117,7 @@
       console.log("destroyed");
     },
     methods: {
-      imgLoad() {
+      detailImgLoad() {
         this.$refs.scroll.refresh()
         // this.themeTopYs();
       },

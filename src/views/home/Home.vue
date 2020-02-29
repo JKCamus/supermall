@@ -32,6 +32,7 @@
   import {
     debounce
   } from 'common/utils'
+  import {itemListenerMixin} from 'common/mixin'
   export default {
     name: "home",
     components: {
@@ -44,6 +45,7 @@
       Scroll,
       BackTop
     },
+    mixins:[itemListenerMixin],
     data() {
       return {
         banners: [],
@@ -69,7 +71,6 @@
         isTabFixed: false,
         tabOffsetTop: 0,
         saveY: 0,
-        itemImgListener: null //首页图片监听
       }
     },
     computed: {
@@ -90,20 +91,7 @@
     },
 
     mounted() {
-      // 用防抖包装refresh函数,注意传入时不加括号
-      let refresh = debounce(this.$refs.scroll.refresh, 50)
-      this.$bus.$on('imgItemLoad', () => {
-        refresh()
-      })
-      this.itemImgListener = () => {
-        refresh()
-      }
-      this.$bus.$on("imgItemLoad", this.itemImgListener)
-      // 不要在created里面拿到dom
-      // this.$bus.$on('imgItemLoad', () => {
-      //   this.$refs.scroll.refresh()
-      //   // console.log('----');
-      // })
+
     },
     activated() {
       this.$refs.scroll.scrollTo(0, this.saveY, 0)
@@ -150,7 +138,7 @@
       },
       swiperImageLoad() {
         this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
-        console.log(this.tabOffsetTop);
+        // console.log(this.tabOffsetTop);
       },
       // 网络请求方法
       getHomeMultidata() {
