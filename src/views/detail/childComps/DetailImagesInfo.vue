@@ -41,7 +41,7 @@ export default {
     imgLoad() {
       if (++this.count === this.imagesLength) {
         this.$emit("imgLoad");
-        console.log("发送");
+        // console.log("发送");
         
       }
     }

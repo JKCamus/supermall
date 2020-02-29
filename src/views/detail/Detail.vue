@@ -1,12 +1,15 @@
 <template>
   <div id="detail">
-    <detail-nav-bar></detail-nav-bar>
-    <scroll class="content" ref="scroll">
+    <detail-nav-bar @titleClick="titleClick"></detail-nav-bar>
+    <scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
       <detail-images-info @imgLoad="imgLoad" :images-info="detailInfo" />
       <detail-param-info :param-info="paramInfo"></detail-param-info>
+      <detail-comment-info :comment-info="commentInfo" class="detail-set-scroll"></detail-comment-info>
+      <goods-list :goods="recommends"></goods-list>
+
     </scroll>
   </div>
 </template>
@@ -17,12 +20,19 @@
   import DetailShopInfo from 'views/detail/childComps/DetailShopInfo'
   import DetailImagesInfo from 'views/detail/childComps/DetailImagesInfo'
   import DetailParamInfo from 'views/detail/childComps/DetailParamInfo'
+  import DetailCommentInfo from 'views/detail/childComps/DetailCommentInfo'
+
   import Scroll from 'components/common/scroll/Scroll'
+  import GoodsList from 'components/content/goods/GoodsList'
+  import {
+    debounce
+  } from 'common/utils'
   import {
     getDetail,
     Goods,
     Shop,
-    GoodsParam
+    GoodsParam,
+    getRecommend
   } from 'network/detail'
   export default {
     name: "Detail",
@@ -33,7 +43,9 @@
       DetailShopInfo,
       DetailImagesInfo,
       DetailParamInfo,
-      Scroll
+      DetailCommentInfo,
+      Scroll,
+      GoodsList
     },
     data() {
       return {
@@ -42,7 +54,12 @@
         goods: {},
         shop: {},
         paramInfo: {},
-        detailInfo: {}
+        detailInfo: {},
+        commentInfo: {},
+        recommends:[],
+        // themeTopYs: [],
+        getThemeTopY: null,
+        itemImgListener: null
       }
     },
     created() {
@@ -66,15 +83,56 @@
         // console.log(this.detailInfo);
         this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
         // console.log(this.paramInfo);
+        if (data.rate.cRate !== 0) {
+          this.commentInfo = data.rate.list[0] || {}
+        }
 
       })
+      
+      // 请求推荐数据
+      getRecommend().then(res=>{
+        // console.log(res);
+        this.recommends=res.data.list
+      })
+      // this.getThemeTopY = debounce(() => {
+      //   this.themeTopYs = []
+      //   this.themeTopYs.push(0)
+      //   this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+      //   this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+      //   this.themeTopYs.push(this.$refs.recomend.$el.offsetTop)
+      // })
+    },
+    mounted() {
+      let refresh = debounce(this.$refs.scroll.refresh, 50)
+      this.itemImgListener=()=>{
+        refresh()
+      }
+      this.$bus.$on('imgItemLoad',this.itemImgListener)
+    },
+    // detail里没有做缓存，deactivated无效
+    // deactivated() {
+    //   this.$bus.$ff('imgItemLoad',this.itemImgListener)
+    // },
+    destroyed() {
+      this.$bus.$off('imgItemLoad',this.itemImgListener)
+      console.log("destroyed");
     },
     methods: {
       imgLoad() {
-        // this.$refs.scroll.refresh()
-        this.$refs.scroll.refresh();
+        this.$refs.scroll.refresh()
+        // this.themeTopYs();
+      },
+      titleClick(index) {
+        // console.log(index);
+        // console.log(this.commentInfo);
+        
+        // this.$refs.scroll.scrollTo(0, this.themeTopYs[index], 0)
+      },
+      contentScroll(position) {
 
-      }
+
+      },
+
     }
   }
 

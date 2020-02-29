@@ -3,16 +3,14 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <tab-control :titles="['流行','新款','精选']" class="tab-control" 
-    @tabClick="tabClick" ref="tabControl1"
-    v-show="isTabFixed"></tab-control>
+    <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick" ref="tabControl1"
+      v-show="isTabFixed"></tab-control>
     <scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll" :pull-up-load="true"
       @pulingUp='loadMore'>
       <home-swiper :banners="banners" @swiperImageLoad='swiperImageLoad'></home-swiper>
       <recommend :recommends="recommends"></recommend>
       <feature></feature>
-      <tab-control :titles="['流行','新款','精选']" class="tab-control" 
-      @tabClick="tabClick" ref="tabControl2"></tab-control>
+      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick" ref="tabControl2"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="topClick" v-show="isShowBackTop"></back-top>
@@ -70,24 +68,18 @@
         isShowBackTop: false,
         isTabFixed: false,
         tabOffsetTop: 0,
-        saveY: 0
+        saveY: 0,
+        itemImgListener: null //首页图片监听
       }
     },
     computed: {
       showGoods() {
         return this.goods[this.currentType].list
       },
-      // destroyed() {
-      //   console.log("destroyed");
-      // },
-      activated() {
-        this.$refs.scroll.scrollTo(0, this.saveY, 0)
-        this.$refs.scroll.refresh()
-      },
-      deactivated() {
-        this.saveY = this.$refs.scroll.getScrollY()
-      }
     },
+    // destroyed() {
+    //   console.log("destroyed");
+    // },
     created() {
       // !请求多个数据
       this.getHomeMultidata()
@@ -96,17 +88,33 @@
         this.getHomeGoods('new'),
         this.getHomeGoods('sell')
     },
+
     mounted() {
       // 用防抖包装refresh函数,注意传入时不加括号
-      const refresh = debounce(this.$refs.scroll.refresh, 50)
+      let refresh = debounce(this.$refs.scroll.refresh, 50)
       this.$bus.$on('imgItemLoad', () => {
         refresh()
       })
+      this.itemImgListener = () => {
+        refresh()
+      }
+      this.$bus.$on("imgItemLoad", this.itemImgListener)
       // 不要在created里面拿到dom
       // this.$bus.$on('imgItemLoad', () => {
       //   this.$refs.scroll.refresh()
       //   // console.log('----');
       // })
+    },
+    activated() {
+      this.$refs.scroll.scrollTo(0, this.saveY, 0)
+      this.$refs.scroll.refresh()
+    },
+    deactivated() {
+      // 保存滚动Y值
+      this.saveY = this.$refs.scroll.getScrollY()
+      // 取消全局事件监听
+      this.$bus.$off("imgItemLoad", this.itemImgListener)
+
     },
     methods: {
       // 点击切换推荐栏
