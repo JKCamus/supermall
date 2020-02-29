@@ -1,15 +1,14 @@
 <template>
   <div id="detail">
-    <detail-nav-bar @titleClick="titleClick"></detail-nav-bar>
+    <detail-nav-bar @titleClick="titleClick" ref="nav"></detail-nav-bar>
     <scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
       <detail-images-info @imgLoad="detailImgLoad" :images-info="detailInfo" />
-      <detail-param-info :param-info="paramInfo"></detail-param-info>
-      <detail-comment-info :comment-info="commentInfo" class="detail-set-scroll"></detail-comment-info>
-      <goods-list :goods="recommends"></goods-list>
-
+      <detail-param-info :param-info="paramInfo" ref="params"></detail-param-info>
+      <detail-comment-info :comment-info="commentInfo" class="detail-set-scroll" ref="comment"></detail-comment-info>
+      <goods-list :goods="recommends" ref="recommend"></goods-list>
     </scroll>
   </div>
 </template>
@@ -27,8 +26,10 @@
   import {
     debounce
   } from 'common/utils'
-  import {itemListenerMixin} from 'common/mixin'
-  
+  import {
+    itemListenerMixin
+  } from 'common/mixin'
+
   import {
     getDetail,
     Goods,
@@ -49,7 +50,7 @@
       Scroll,
       GoodsList
     },
-    mixins:[itemListenerMixin],
+    mixins: [itemListenerMixin],
     data() {
       return {
         iid: null,
@@ -59,10 +60,9 @@
         paramInfo: {},
         detailInfo: {},
         commentInfo: {},
-        recommends:[],
-        // themeTopYs: [],
+        recommends: [],
+        themeTopYs: [],
         getThemeTopY: null,
-        itemImgListener: null
       }
     },
     created() {
@@ -91,45 +91,62 @@
         }
 
       })
-      
+
       // 请求推荐数据
-      getRecommend().then(res=>{
+      getRecommend().then(res => {
         // console.log(res);
-        this.recommends=res.data.list
+        this.recommends = res.data.list
       })
-      // this.getThemeTopY = debounce(() => {
-      //   this.themeTopYs = []
-      //   this.themeTopYs.push(0)
-      //   this.themeTopYs.push(this.$refs.params.$el.offsetTop)
-      //   this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
-      //   this.themeTopYs.push(this.$refs.recomend.$el.offsetTop)
-      // })
+      //获取全部加载后对应的offsetTop
+      this.getThemeTopY = debounce(() => {
+        console.log("***");
+
+        this.themeTopYs = []
+        this.themeTopYs.push(0)
+        this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+        // 推入最大值，滚动更新用
+        this.themeTopYs.push(Number.MAX_VALUE)
+        console.log(this.themeTopYs);
+      })
     },
     mounted() {
- 
+
     },
     // detail里没有做缓存，deactivated无效
     // deactivated() {
     //   this.$bus.$ff('imgItemLoad',this.itemImgListener)
     // },
     destroyed() {
-      this.$bus.$off('imgItemLoad',this.itemImgListener)
+      this.$bus.$off('imgItemLoad', this.itemImgListener)
       console.log("destroyed");
     },
     methods: {
       detailImgLoad() {
         this.$refs.scroll.refresh()
+        // this.newRefresh()
         // this.themeTopYs();
+        this.getThemeTopY()
       },
       titleClick(index) {
         // console.log(index);
-        // console.log(this.commentInfo);
-        
-        // this.$refs.scroll.scrollTo(0, this.themeTopYs[index], 0)
+        this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 100)
+
       },
       contentScroll(position) {
+        const positionY=-position.y
+        for (let i in this.themeTopYs) {
+          // console.log(i);
+          let length=this.themeTopYs.length
+          for(let i =0;i<length-1;i++){
+            if(this.currentIndex !==i && (positionY >=this.themeTopYs[i]&&positionY < this.themeTopYs[i+1])){
+              this.currentIndex=i
+              this.$refs.nav.currentIndex=this.currentIndex
+            }
+          }
 
-
+        }
       },
 
     }
@@ -151,7 +168,16 @@
   }
 
   .content {
-    height: calc(100% - 44px);
+    /* height: calc(100% - 44px); */
+    /* 定位计算滚动高度 */
+    position: absolute;
+    top: 44px;
+    right: 0;
+    bottom: 50px;
+    left: 0;
+    overflow: hidden;
+    width: 100%;
+    background-color: #ffffff;
   }
 
 </style>
