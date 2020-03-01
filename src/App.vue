@@ -21,7 +21,7 @@
 <style>
   @import url("./assets/css/base.css");
   .main-tab-bar{
-    /* z-index: 9; */
+    z-index: 1;
   }
 
 </style>

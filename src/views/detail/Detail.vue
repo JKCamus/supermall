@@ -2,6 +2,11 @@
   <div id="detail">
     <detail-nav-bar @titleClick="titleClick" ref="nav"></detail-nav-bar>
     <scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll">
+      <ul>
+        <li v-for="item in $store.state.cartGoods">
+          {{item}}
+        </li>
+      </ul>
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
@@ -10,6 +15,8 @@
       <detail-comment-info :comment-info="commentInfo" class="detail-set-scroll" ref="comment"></detail-comment-info>
       <goods-list :goods="recommends" ref="recommend"></goods-list>
     </scroll>
+    <back-top @click.native="topClick" v-show="isShowBackTop"></back-top>
+    <detail-bottom-bar @addToCart="addCart" class="bottom-bar"></detail-bottom-bar>
   </div>
 </template>
 <script>
@@ -20,14 +27,15 @@
   import DetailImagesInfo from 'views/detail/childComps/DetailImagesInfo'
   import DetailParamInfo from 'views/detail/childComps/DetailParamInfo'
   import DetailCommentInfo from 'views/detail/childComps/DetailCommentInfo'
-
+  import DetailBottomBar from 'views/detail/childComps/DetailBottomBar'
   import Scroll from 'components/common/scroll/Scroll'
   import GoodsList from 'components/content/goods/GoodsList'
   import {
     debounce
   } from 'common/utils'
   import {
-    itemListenerMixin
+    itemListenerMixin,
+    backTopMixin
   } from 'common/mixin'
 
   import {
@@ -48,9 +56,11 @@
       DetailParamInfo,
       DetailCommentInfo,
       Scroll,
-      GoodsList
+      GoodsList,
+      DetailBottomBar
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin, backTopMixin],
+
     data() {
       return {
         iid: null,
@@ -99,7 +109,7 @@
       })
       //获取全部加载后对应的offsetTop
       this.getThemeTopY = debounce(() => {
-        console.log("***");
+        // console.log("***");
 
         this.themeTopYs = []
         this.themeTopYs.push(0)
@@ -108,7 +118,7 @@
         this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
         // 推入最大值，滚动更新用
         this.themeTopYs.push(Number.MAX_VALUE)
-        console.log(this.themeTopYs);
+        // console.log(this.themeTopYs);
       })
     },
     mounted() {
@@ -120,7 +130,7 @@
     // },
     destroyed() {
       this.$bus.$off('imgItemLoad', this.itemImgListener)
-      console.log("destroyed");
+      // console.log("destroyed");
     },
     methods: {
       detailImgLoad() {
@@ -135,20 +145,50 @@
 
       },
       contentScroll(position) {
-        const positionY=-position.y
+        const positionY = -position.y
         for (let i in this.themeTopYs) {
           // console.log(i);
-          let length=this.themeTopYs.length
-          for(let i =0;i<length-1;i++){
-            if(this.currentIndex !==i && (positionY >=this.themeTopYs[i]&&positionY < this.themeTopYs[i+1])){
-              this.currentIndex=i
-              this.$refs.nav.currentIndex=this.currentIndex
+          let length = this.themeTopYs.length
+          for (let i = 0; i < length - 1; i++) {
+            if (this.currentIndex !== i && (positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i + 1])) {
+              this.currentIndex = i
+              this.$refs.nav.currentIndex = this.currentIndex
             }
           }
-
         }
+        // 显示隐藏回到顶部按钮
+        this.isShowBackTop = positionY > 1000
       },
+      addCart() {
+        console.log("biu");
 
+
+        // 1获取购物车需要展示的信息
+        // const product = {
+        //   image: this.topImages[0],
+        //   title: this.goods.title,
+        //   desc: this.goods.desc,
+        //   price: this.goods.realPrice,
+        //   id: this.iid
+        // }
+        // this.$store.commit("addCart", product)
+        //获取购物车需要展示的信息，对象的形式
+        const product = {
+          image: this.topImages[0],
+          title: this.goods.title,
+          desc: this.goods.desc,
+          price: this.goods.realPrice,
+          iid: this.iid,
+          newPrice: this.newPrice,
+        };
+        //将商品添加购物车里 vuex
+        // this.$store.dispatch('addCart',product).then(res => {
+        //   console.log(res)
+        // })
+        // this.$store.commit("addCart", product)
+        this.$store.dispatch('addCart', product)
+        
+      }
     }
   }
 
@@ -156,16 +196,16 @@
 <style scoped>
   #detail {
     position: relative;
-    z-index: 9;
+    /* z-index: 9; */
     background-color: #fff;
     height: 100vh;
   }
 
-  .detail-nav {
+  /* .detail-nav {
     position: relative;
     z-index: 9;
     background-color: #fff;
-  }
+  } */
 
   .content {
     /* height: calc(100% - 44px); */
@@ -173,11 +213,14 @@
     position: absolute;
     top: 44px;
     right: 0;
-    bottom: 50px;
+    bottom: 49px;
     left: 0;
     overflow: hidden;
     width: 100%;
     background-color: #ffffff;
+  }
+  .bottom-bar{
+    z-index: 9;
   }
 
 </style>

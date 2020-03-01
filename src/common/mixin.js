@@ -2,12 +2,15 @@
 import {
   debounce
 } from './utils';
+
+import BackTop from 'components/content/backtop/BackTop'
+
 export const itemListenerMixin = {
   // 用防抖包装refresh函数,注意传入时不加括号
   data() {
     return {
       itemImgListener: null,
-      newRefresh:null
+      newRefresh: null
     }
   },
   mounted() {
@@ -19,3 +22,20 @@ export const itemListenerMixin = {
     //   console.log("wos");
   }
 };
+export const backTopMixin = {
+  components: {
+    BackTop
+  },
+  data() {
+    return {
+      isShowBackTop: false,
+    }
+  },
+  methods: {
+    // 点击回到顶部
+    topClick() {
+      this.$refs.scroll.scrollTo(0, 0)
+    },
+
+  },
+}

@@ -24,7 +24,6 @@
   import GoodsList from 'components/content/goods/GoodsList'
   import TabControl from 'components/content/tabControl/TabControl'
   import Scroll from 'components/common/scroll/Scroll.vue'
-  import BackTop from 'components/content/backtop/BackTop'
   import {
     getHomeMultidata,
     getHomeGoods,
@@ -32,7 +31,7 @@
   import {
     debounce
   } from 'common/utils'
-  import {itemListenerMixin} from 'common/mixin'
+  import {itemListenerMixin,backTopMixin} from 'common/mixin'
   export default {
     name: "home",
     components: {
@@ -43,9 +42,8 @@
       TabControl,
       GoodsList,
       Scroll,
-      BackTop
     },
-    mixins:[itemListenerMixin],
+    mixins:[itemListenerMixin,backTopMixin],
     data() {
       return {
         banners: [],
@@ -67,7 +65,6 @@
         },
         // 默认首页为pop，
         currentType: 'pop',
-        isShowBackTop: false,
         isTabFixed: false,
         tabOffsetTop: 0,
         saveY: 0,
@@ -123,10 +120,7 @@
         this.$refs.tabControl2.currentIndex = index;
         this.$refs.tabControl1.currentIndex = index;
       },
-      // 点击回到顶部
-      topClick() {
-        this.$refs.scroll.scrollTo(0, 0)
-      },
+
       // 判断点击回到顶部按钮的显示隐藏
       contentScroll(position) {
         this.isShowBackTop = (-position.y) > 1000
