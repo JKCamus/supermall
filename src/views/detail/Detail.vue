@@ -2,11 +2,6 @@
   <div id="detail">
     <detail-nav-bar @titleClick="titleClick" ref="nav"></detail-nav-bar>
     <scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll">
-      <ul>
-        <li v-for="item in $store.state.cartGoods">
-          {{item}}
-        </li>
-      </ul>
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
@@ -161,17 +156,6 @@
       },
       addCart() {
         console.log("biu");
-
-
-        // 1获取购物车需要展示的信息
-        // const product = {
-        //   image: this.topImages[0],
-        //   title: this.goods.title,
-        //   desc: this.goods.desc,
-        //   price: this.goods.realPrice,
-        //   id: this.iid
-        // }
-        // this.$store.commit("addCart", product)
         //获取购物车需要展示的信息，对象的形式
         const product = {
           image: this.topImages[0],
@@ -187,7 +171,7 @@
         // })
         // this.$store.commit("addCart", product)
         this.$store.dispatch('addCart', product)
-        
+
       }
     }
   }
@@ -201,11 +185,11 @@
     height: 100vh;
   }
 
-  /* .detail-nav {
+  .detail-nav {
     position: relative;
     z-index: 9;
     background-color: #fff;
-  } */
+  }
 
   .content {
     /* height: calc(100% - 44px); */
@@ -219,7 +203,8 @@
     width: 100%;
     background-color: #ffffff;
   }
-  .bottom-bar{
+
+  .bottom-bar {
     z-index: 9;
   }
 

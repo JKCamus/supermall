@@ -9,5 +9,8 @@ export default {
   },
   [ADD_TO_CART](state, payload) {
     state.cartGoods.push(payload)
+    payload.isChecked = true
+    payload.count = 1;
+
   }
 }
