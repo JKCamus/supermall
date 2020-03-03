@@ -1,25 +1,27 @@
 <template>
-  <div class="check-button" @click="buttonClick">
-    <img src="~assets/img/cart/tick.svg" alt="" :class="{check:isCheck}">
+  <div class="check-button">
+    <img src="~assets/img/cart/tick.svg" alt="" :class="{active:isCheck}">
   </div>
 </template>
 <script>
   export default {
     name: "CheckButton",
-    data() {
-      return {
-        isCheck: null
-      }
-    },
-    methods: {
-      buttonClick() {
-        // console.log(this.isCheck);
-        this.isCheck = !this.$store.state.cartGoods[0].isChecked
-        // console.log(!this.$store.state.cartGoods[0].isChecked);
-        // console.log(this.isCheck);
+    props: {
+      isCheck: {
+        style: Boolean,
+        default:false
       },
     },
-
+    methods: {
+      // buttonClick() {
+      //   this.product.isChecked = !this.product.isChecked
+      //   // console.log(this.product.isChecked);
+      //   // console.log(this.$store.state.cartGoods[0].isChecked);
+      // }
+    },
+    data() {
+      return {}
+    }
   }
 
 </script>
@@ -33,7 +35,7 @@
     margin-bottom: 7px;
   }
 
-  .check {
+  .active {
     border: 2px solid var(--color-tint) !important;
     background-color: var(--color-tint);
   }

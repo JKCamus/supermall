@@ -1,8 +1,8 @@
 <template>
   <div class="list-item">
     <div class="item-selector">
-      <!-- <check-button :isCheck="product.isChecked"  -->
-      <check-button @click.native="changeCheck"></check-button>
+      <check-button :isCheck="product.isChecked"  @click.native="changeCheck"
+       ></check-button>
     </div>
     <div class="item-img">
       <img :src="product.image" alt="商品图片">
@@ -35,10 +35,9 @@
     },
     methods: {
       changeCheck() {
+        // console.log("我是F" + this.product.isChecked);
+        // console.log();
         this.product.isChecked = !this.product.isChecked
-        console.log("我是F" + this.product.isChecked);
-        console.log();
-
       }
     }
   }

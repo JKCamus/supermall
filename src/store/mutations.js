@@ -1,16 +1,10 @@
-import {
-  ADD_COUNTER,
-  ADD_TO_CART
-} from './mutations-type'
 export default {
-  [ADD_COUNTER](state, payload) {
-    // 实现devtools跟踪
-    payload.count++
+  addCount(state,payload) {
+    payload.count += 1;
   },
-  [ADD_TO_CART](state, payload) {
-    state.cartGoods.push(payload)
-    payload.isChecked = true
+  pushCartGoods(state,payload) {
+    payload.isChecked = false;
     payload.count = 1;
-
+    state.cartGoods.push(payload)
   }
 }

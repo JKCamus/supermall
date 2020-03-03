@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import vant from "vant";
-import store from './store'
+import store from './store/store'
 
 
 // 挂载路由
