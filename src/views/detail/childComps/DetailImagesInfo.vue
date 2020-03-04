@@ -39,15 +39,17 @@ export default {
   },
   methods: {
     imgLoad() {
+      // 通过图片的数量是否加载完来判断是否发送事件
       if (++this.count === this.imagesLength) {
         this.$emit("imgLoad");
         // console.log("发送");
-        
+        // console.log(this.imagesInfo.detailImage[0].list.length);
       }
     }
   },
   watch: {
     imagesInfo() {
+      // 获取详情图片数量
       this.imagesLength = this.imagesInfo.detailImage[0].list.length;
     }
   }

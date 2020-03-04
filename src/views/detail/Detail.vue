@@ -74,38 +74,13 @@
       // 将iid保存
       this.iid = this.$route.params.iid
       //   console.log(this.$route.params.iid);
-      //   根据iid请求详情页数据
-      getDetail(this.iid).then(res => {
-        const data = res.result
-        // console.log(res);
-        //获取详情页顶部轮播图
-        this.topImages = data.itemInfo.topImages
-        //根据iid请求获取商品信息
-        this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
-        // console.log(this.goods);
-        // 获取店铺信息
-        this.shop = new Shop(data.shopInfo)
-        // console.log(this.shop);
-        // 获取详细信息
-        this.detailInfo = data.detailInfo
-        // console.log(this.detailInfo);
-        this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
-        // console.log(this.paramInfo);
-        if (data.rate.cRate !== 0) {
-          this.commentInfo = data.rate.list[0] || {}
-        }
-
-      })
-
+      //  根据iid请求详情页数据
+      this.getDetail();
       // 请求推荐数据
-      getRecommend().then(res => {
-        // console.log(res);
-        this.recommends = res.data.list
-      })
+      this.getRecommend();
       //获取全部加载后对应的offsetTop
       this.getThemeTopY = debounce(() => {
         // console.log("***");
-
         this.themeTopYs = []
         this.themeTopYs.push(0)
         this.themeTopYs.push(this.$refs.params.$el.offsetTop)
@@ -128,9 +103,38 @@
       // console.log("destroyed");
     },
     methods: {
+      // 获取店铺信息方法
+      getDetail() {
+        getDetail(this.iid).then(res => {
+          const data = res.result
+          // console.log(res);
+          //获取详情页顶部轮播图
+          this.topImages = data.itemInfo.topImages
+          //根据iid请求获取商品信息
+          this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
+          // console.log(this.goods);
+          // 获取店铺信息
+          this.shop = new Shop(data.shopInfo)
+          // console.log(this.shop);
+          // 获取详细信息
+          this.detailInfo = data.detailInfo
+          // console.log(this.detailInfo);
+          this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
+          // console.log(this.paramInfo);
+          if (data.rate.cRate !== 0) {
+            this.commentInfo = data.rate.list[0] || {}
+          }
+        })
+      },
+      // 获取推荐信息方法
+      getRecommend() {
+        getRecommend().then(res => {
+          // console.log(res);
+          this.recommends = res.data.list
+        })
+      },
       detailImgLoad() {
         this.$refs.scroll.refresh()
-        // this.newRefresh()
         // this.themeTopYs();
         this.getThemeTopY()
       },
@@ -140,6 +144,7 @@
 
       },
       contentScroll(position) {
+        // 同步对应标签
         const positionY = -position.y
         for (let i in this.themeTopYs) {
           // console.log(i);
@@ -170,8 +175,11 @@
         //   console.log(res)
         // })
         // this.$store.commit("addCart", product)
-        this.$store.dispatch('addCart', product)
-
+        // 通过action改变vuex变量
+        this.$store.dispatch('addCart', product).then(res => {
+          // console.log(res);
+          this.$toast.show("加入购物车成功", 1500)
+        })
       }
     }
   }

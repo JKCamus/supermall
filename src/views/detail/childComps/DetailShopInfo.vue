@@ -137,6 +137,8 @@
   }
 
   .shop-middle-right .better span {
+    padding: 2px;
+    border-radius: 10%;
     background-color: #5ea732;
     color: #fff;
     text-align: center;

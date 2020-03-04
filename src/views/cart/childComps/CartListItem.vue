@@ -1,7 +1,7 @@
 <template>
   <div class="list-item">
     <div class="item-selector">
-      <check-button :isCheck="product.isChecked"  @click.native="changeCheck"
+      <check-button :isCheck="product.isChecked" @click.native="changeCheck"
        ></check-button>
     </div>
     <div class="item-img">

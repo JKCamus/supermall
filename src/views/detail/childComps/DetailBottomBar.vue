@@ -1,6 +1,6 @@
 <template>
   <div class="bottom-bar">
-    <div class="bar-item left">
+    <div class="bar-item bar-left">
       <div>
         <i class="icon service"></i>
         <span class="text">客服</span>
@@ -14,7 +14,7 @@
         <span class="text">收藏</span>
       </div>
     </div>
-    <div class="bar-item right" >
+    <div class="bar-item bar-right" >
         <div class="cart" @click="addToCart">加入购物车</div>
         <div class="buy">购买</div>
     </div>
@@ -35,57 +35,64 @@
 </script>
 <style scoped>
   .bottom-bar {
-    /* height: 49px; */
-    /* background-color: red; */
-    /* position: fixed;
-    left: 0;
-    right: 0;
-    display: flex;
-    text-align: center; */
-    background-color: #fff;
-    height: 49px;
+    height: 58px;
     position: fixed;
-    bottom: 2px;
+    background-color: #fff;
     left: 0;
     right: 0;
-    /* display: flex; */
+    bottom: 0;
+
+    display: flex;
     text-align: center;
   }
-  /* .left {
-    width: 50%;
-  } */
-  .left,.right {
+
+  .bar-item {
+    flex: 1;
     display: flex;
   }
 
-  .left .icon {
+  .bar-item>div {
+    flex: 1;
+  }
+
+  .bar-left .text {
+    font-size: 13px;
+  }
+
+  .bar-left .icon {
     display: block;
-    width: 24px;
-    height: 24px;
-    margin: 5px 21px 3px;
-    background:url('~assets/img/detail/detail_bottom.png') 0 0/100%;
+    width: 22px;
+    height: 22px;
+    margin: 10px auto 3px;
+    background: url("~assets/img/detail/detail_bottom.png") 0 0/100%;
   }
 
-  .text {
-    font-size: 14px;
-  }
-  .right .cart {
-    height: 49px;
-    width: 100%;
-    background-color: #fff737;
-    text-align: center;
-    color:#666;
-    font-size: 16px;
-    line-height: 49px;
+  .bar-left .service {
+    background-position:0 -54px;
   }
 
-  .right .buy {
-    height: 49px;
-    width: 100%;
-    background-color: var(--color-tint);
-    text-align: center;
-    color:#fff;
-    font-size:16px;
-    line-height: 49px;
+  .bar-left .shop {
+    background-position:0 -98px;
+  }
+
+  .bar-right {
+    font-size: 15px;
+    color: #fff;
+    line-height: 58px;
+  }
+
+  .bar-right .cart {
+    background-color: #ffe817;
+    /* color: #333; */
+  }
+
+  .bar-right .buy {
+    background-color: #f69;
+  }
+
+  .sport-ball {
+    position: absolute;
+    left: 225px;
+    bottom: 20px;
   }
 </style> */

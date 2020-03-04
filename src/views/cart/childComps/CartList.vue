@@ -1,13 +1,12 @@
 <template>
   <div class="cart-list">
-    <cart-list-item v-for="(item,index) in cartGoodsList" :key="index" :product="item"></cart-list-item>
+    <cart-list-item v-for="(item,index) in cartGoodsList" 
+    :key="index" :product="item"></cart-list-item>
   </div>
 </template>
 <script>
   import Scroll from 'components/common/scroll/Scroll'
   import CartListItem from 'views/cart/childComps/CartListItem'
-
-
   import {
     mapGetters
   } from 'vuex'
@@ -19,11 +18,6 @@
     computed: {
       ...mapGetters(["cartGoodsList"])
     },
-
-    mounted() {
-
-    }
-
   }
 
 </script>

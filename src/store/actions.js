@@ -7,10 +7,10 @@ export default {
      })
      if (product) {
        context.commit('addCount', product)
-       resolve('数量加一')
+       resolve('当前商品数量+1')
      } else {
        context.commit('pushCartGoods', payload)
-       resolve('添加商品')
+       resolve('成功添加新商品')
      }
    })
   }

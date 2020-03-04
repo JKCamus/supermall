@@ -13,11 +13,7 @@
       },
     },
     methods: {
-      // buttonClick() {
-      //   this.product.isChecked = !this.product.isChecked
-      //   // console.log(this.product.isChecked);
-      //   // console.log(this.$store.state.cartGoods[0].isChecked);
-      // }
+
     },
     data() {
       return {}

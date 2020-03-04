@@ -19,7 +19,7 @@ export const itemListenerMixin = {
       this.newRefresh()
     }
     this.$bus.$on('imgItemLoad', this.itemImgListener)
-    //   console.log("wos");
+      // console.log("wos");
   }
 };
 export const backTopMixin = {
