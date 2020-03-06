@@ -31,7 +31,10 @@
   import {
     debounce
   } from 'common/utils'
-  import {itemListenerMixin,backTopMixin} from 'common/mixin'
+  import {
+    itemListenerMixin,
+    backTopMixin
+  } from 'common/mixin'
   export default {
     name: "home",
     components: {
@@ -43,7 +46,7 @@
       GoodsList,
       Scroll,
     },
-    mixins:[itemListenerMixin,backTopMixin],
+    mixins: [itemListenerMixin, backTopMixin],
     data() {
       return {
         banners: [],

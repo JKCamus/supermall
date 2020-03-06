@@ -10,7 +10,7 @@
 </template>
 <script>
   export default {
-    name: "NormalList",
+    name: "InfoList",
     props: {
       listData: {
         style: Array,

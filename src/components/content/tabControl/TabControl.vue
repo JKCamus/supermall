@@ -33,7 +33,7 @@
     }
   }
 </script>
-<style>
+<style scoped>
   .tab-control {
     display: flex;
     height: 40px;

@@ -43,7 +43,7 @@
           },
           {
             icon: 'shopping.svg',
-            info: '下载购物APP'
+            info: '点赞APP'
           },
         ]
       }
