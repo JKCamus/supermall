@@ -2,7 +2,7 @@ import axios from 'axios'
 export function request(config) {
   // 1创建实例
   const instance = axios.create({
-
+//接入接口
     timeout: 5000
   })
   // 2.axios的拦截器
